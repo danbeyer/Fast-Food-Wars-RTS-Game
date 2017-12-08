@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Food Fight!</title>
+    <script src="js/jquery-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <!--script src="js/foodFight.js" type="text/javascript" charset="utf-8"></script-->
+    <script src="js/mouse.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/path.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/path.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/build.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/game.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/maps.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/units.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/buildings.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/fog.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vehicles.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/gameState.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/economy.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ai.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/projectiles.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sounds.js" type="text/javascript" charset="utf-8"></script>
+
+    <link rel="stylesheet" href="styles.css" type="text/css" media="screen" charset="utf-8">
+</head>
+<body>
+    <audio autoplay="" loop="loop" preload="">
+        <!--source src="audio/background2.wav" type="audio/wav"></source-->
+    </audio>
+<div class="hiddenImages">
+    <img src="images\environment\meatball.png" id="meat" width="32" height="32">
+    <img src="images\environment\meatball_wet.png" id="wetmeat" width="32" height="32">
+    <img src="images\environment\spaghetti.png" id="spag" width="32" height="32">
+</div>
+    <div id="background">
+        <div id="title">
+            <span id="head">Fast Food Wars</span>
+            <br></br>
+        </div>
+        <div id="startscreen" class="gamestart">
+            <span id="singleplayer" onclick = "hideStart()">Start Game</span>
+            <span id="load" onclick = "game.loadSave()">Load Game</span>
+            <div id="chooseTeam" >Choose Your Crew</div>
+            <ul id="teamSelect">
+                <li id="blue" onclick = "game.teamSelect('america')">Team America</li>
+                <li id="red" onclick = "game.teamSelect('fusion')">Team Fusion</li>
+                <li id="green" onclick = "game.teamSelect('coffee')">Team Coffee</li>
+            </ul>
+			<ul id="difficulty">
+				<li id="blue" onclick = "game.init('easy')">Easy</li>
+                <li id="red" onclick = "game.init('hard')">Hard</li>
+			</ul>
+			<p id="intro">
+	The objective of this game is to destroy the enemy's HQ building or all of their food trucks.  Your food truck passively increases your first economy, and food truck wokers or seperate food trucks
+	can be purchased to further increase your economy.  Food trucks can also build buildings, and if they are in range of the building they increase your secondary economy, which can be used to buy
+	additional supply and upgrades, which can be purchased at the HQ building.  The further a building is from your HQ, the more secondary economy gets generated so long as a food truck is in range.  
+	Buildings can build specific types of units. Food carts build first tier units, food tents build second tier units, and garages build vehicles.
+	</p>
+        </div>
+    </div>
+
+    <div id="gameinterface" class="gamelayer">
+        <div id="container">
+            <canvas id="gamebackground"  height="800" width="1450"></canvas>
+            <canvas id="gameforeground" height="800" width="1450"></canvas>
+            <canvas id="gameDrawing" height="800" width="1450"></canvas>
+            <div id="sidehud">
+                <button class="history" id="back" title="Back">Back</button>
+                <button class="hq" id="upgrades" title="Upgrades" onclick="build.enableUpgrades()">Make Upgrades</button>
+                <button class="hq" id="supply" title="Supply" onclick="build.addSupply()"></button>
+                <button class="upgrades" id="units" onclick="build.fetchUnits()">Upgrade Units</button>
+                <button class="upgrades" id="vehicles" onclick="build.fetchVehicles()">Upgrade Vehicles</button>
+                <div class="unitExplanation" id="unitTable"></div>
+                <div class="vehicleExplanation" id="vehicleTable"></div>
+                <div class="supplyExplanation"></div>
+                <input type="button" class="food_cart" id="mascot" title="Mascot" onclick="build.make('mascot', 'units')">
+                <input type="button" class="food_cart" id="prep_cook" title="Prep Cook" onclick="build.make('prep_cook', 'units')">
+                <input type="button" class="food_tent" id="brawler" title="Brawler" onclick="build.make('brawler', 'units')">
+                <input type="button" class="food_tent" id="specialty_chef" title="Specialty Chef" onclick="build.make('specialty_chef', 'units')">
+                <input type="button" class="food_tent" id="food_critic" title="Food Critic" onclick="build.make('food_critic', 'units')">
+                <input type="button" class="garage" id="bicycle" title="Bicycle" onclick="build.make('bicycle', 'vehicles')">
+                <input type="button" class="food_truck" id="food_cart" title="Food Cart" onclick="build.make('food_cart', 'buildings')">
+                <input type="button" class="food_truck" id="food_tent" title="Food Tent" onclick="build.make('food_tent', 'buildings')">
+                <input type="button" class="make_truck" id="food_truck" title="Food Truck" onclick="build.make('food_truck', 'buildings')">
+                <input type="button" class="food_truck" id="garage" title="Garage" onclick="build.make('garage', 'buildings')">
+                <button class="food_truck" id="addWorker" title="Add workers to increase your food output!" onclick="game.selectedItems[0].addWorker()">Add Worker</button>
+                <input type="button" id="save" title="Save" onclick="game.saveGame()">
+            </div>
+            <div id="bottomhud">
+
+            </div>
+        </div>
+    </div>
+	<div id="win" onclick="displayBeginning()">YOU WIN!  Click anywhere to continue</div>
+	<div id="lose" onclick="displayBeginning()">YOU LOSE! Click anywhere to continue</div>
+	
+
+</body>
+</html>
